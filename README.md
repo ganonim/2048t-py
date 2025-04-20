@@ -1,5 +1,5 @@
 # 2048t-py
-simple 2014 game for terminal
+simple 2048 game for terminal
 
 movemet:
 w, a, s, d + enter
