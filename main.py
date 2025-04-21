@@ -3,7 +3,7 @@ import time
 import os
 
 SIZE = 4
-char_se = [
+char_set = [
     "0", "1", "2",
 	"3", "4", "5",
 	"6", "7", "8",
@@ -37,7 +37,7 @@ def random_items(matrix, items):
 	free_positions = get_free_positions(matrix, items)
 	if free_positions:
 		x, y = random.choice(free_positions)
-		#random_char_set = random.randint(0, 1)
+		#random_char_sett = random.randint(0, 1)
 		items += [[x, y, 0 ]]
 		return items
 
@@ -51,7 +51,7 @@ def random_seed(seed):
 
 def item_indexer(matrix, items):
 	for items_id in range(len(items)):
-		matrix[items[items_id][1]][items[items_id][0]] =  char_se[items[items_id][2]]
+		matrix[items[items_id][1]][items[items_id][0]] =  char_set[items[items_id][2]]
 	return matrix
 
 def clear(): # for thonny
