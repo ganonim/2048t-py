@@ -144,11 +144,12 @@ def movement(matrix, items, direction, score):
 		random_items(matrix, items)
 	return score
 
-matrix, items, score = generation(SIZE)
-random_items(matrix, items)
-random_items(matrix, items)
+if __name__ == "__main__":
+	matrix, items, score = generation(SIZE)
+	random_items(matrix, items)
+	random_items(matrix, items)
 
-while True:
-	view(matrix, score)
-	direction = lisener()
-	score = movement(matrix, items, direction, score)
+	while True:
+		view(matrix, score)
+		direction = lisener()
+		score = movement(matrix, items, direction, score)
