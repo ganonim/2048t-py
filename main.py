@@ -92,7 +92,6 @@ def lisener():
 
 def movement(matrix, items, direction, score):
 	moved = True
-	n=0
 	old_obj, new_obj = [], []
 
 	dirs = {
