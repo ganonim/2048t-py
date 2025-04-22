@@ -41,7 +41,6 @@ def random_items(matrix, items):
 		items += [[x, y, 0 ]]
 		return items
 
-
 def random_seed(seed):
 	if seed == -1:
 		new_seed = random.randint(10**(8-1), 10**8 - 1)
@@ -82,8 +81,6 @@ def movement(matrix, items, score):
 	moved = True
 	n=0
 	old_obj, new_obj = [], []
-
-	MOVE_TO = lisener()
 
 	dirs = {
 		"a": (0, -1, lambda i: i[0], False),
