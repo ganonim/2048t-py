@@ -39,7 +39,7 @@ def random_items(matrix, items):
 	free_positions = get_free_positions(matrix, items)
 	if free_positions:
 		x, y = random.choice(free_positions)
-		random_char_set = 0 if random.randint(0, 9) < 9 else 1
+		random_char_set = 0 if random.randint(0, 9) < 9 else 0
 		items += [[x, y, random_char_set ]]
 		return items
 
@@ -95,23 +95,27 @@ def movement(matrix, items, direction, score):
 	old_obj, new_obj = [], []
 
 	dirs = {
-		"a": (0, -1),
-		"d": (0, 1),
-		"w": (1, -1),
-		"s": (1, 1)}
+	"a": (0, -1, lambda i: i[0], False),
+	"d": (0, 1,  lambda i: i[0], True),
+	"w": (1, -1, lambda i: i[1], False),
+ 	"s": (1, 1,  lambda i: i[1], True)
+}
 
-	axis, delta = dirs[direction]
+	axis, delta, key_fn, reverse = dirs[direction]
+
+	sorted_items = sorted(items, key=key_fn, reverse=reverse)
+
 
 	while moved:
 		moved = False
 
-		for obj in items[:]:  # копия списка
+		for obj in sorted_items[:]:  # копия списка
 			x = obj[0]
 			y = obj[1]
 			matrix[y][x] = VOID_CHAR
 
 			# Удаление дубликатов по позиции и символу
-			for other in items[::-1]:  # с конца
+			for other in sorted_items[::-1]:  # с конца
 				if other is not obj and obj[0] == other[0] and obj[1] == other[1] and obj[2] == other[2]:
 					score += (obj[2]+1)*2
 					obj[2] += 1
