@@ -1,5 +1,4 @@
 import random
-import time
 import os
 import sys
 
@@ -23,7 +22,6 @@ def generation(SIZE):
 	matrix = [[VOID_CHAR for _ in range(SIZE)] for _ in range(SIZE)]
 	items = []
 	score = 0
-
 	return matrix, items, score
 
 def get_free_positions(matrix, items):
@@ -98,17 +96,12 @@ def movement(matrix, items, direction, score):
 	old_obj, new_obj = [], []
 
 	dirs = {
-		"a": (0, -1, lambda i: i[0], False),
-		"d": (0, 1,  lambda i: i[0], True),
-		"w": (1, -1, lambda i: i[1], False),
-		"s": (1, 1,  lambda i: i[1], True)
-	}
+		"a": (0, -1),
+		"d": (0, 1),
+		"w": (1, -1),
+		"s": (1, 1)}
 
-	axis, delta, key_fn, reverse = dirs[direction]
-
-	# Сортируем индексы по направлению движения
-	sorted_ids = sorted(range(len(items)), key=lambda i: key_fn(items[i]), reverse=reverse)
-	old_items = []
+	axis, delta = dirs[direction]
 
 	while moved:
 		moved = False
@@ -116,7 +109,6 @@ def movement(matrix, items, direction, score):
 		for obj in items[:]:  # копия списка
 			x = obj[0]
 			y = obj[1]
-			symbol = obj[2]
 			matrix[y][x] = VOID_CHAR
 
 			# Удаление дубликатов по позиции и символу
@@ -131,8 +123,7 @@ def movement(matrix, items, direction, score):
 				obj[1 - axis] == other[1 - axis] and
 				obj[axis] + delta == other[axis] and
 				obj[2] != other[2]
-				for other in items
-			)
+				for other in items)
 
 			old_pos = obj[axis]
 			old_obj += [obj]
