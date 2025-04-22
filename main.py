@@ -132,9 +132,10 @@ def movement(matrix, items, direction, score):
 				matrix[y][x] = VOID_CHAR
 				obj[axis] += delta
 
-			# Границы
+			# Walls
 			obj[0] = max(0, min(obj[0], SIZE - 1))
 			obj[1] = max(0, min(obj[1], SIZE - 1))
+
 			if obj[axis] != old_pos:
 				moved = True
 			else:
