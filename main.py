@@ -2,21 +2,25 @@ import random
 import time
 import os
 import sys
-import tty
-import termios
+
+if os.name == 'nt':  # Windows
+    import msvcrt
+else:  # Unix-like systems
+    import tty
+    import termios
 
 SIZE = 4
-char_set = [
-    "0", "1", "2",
-	"3", "4", "5",
-	"6", "7", "8",
-	"9", "A", "B",
-	"C", "D", "E",
-	"F"
-	]
+VOID_CHAR = "-"
+CHAR_SET = [
+    "A", "B", "C",
+    "D", "E", "F",
+    "G", "H", "I",
+    "J", "K", "L",
+    "M", "N", "O",
+    "P"]
 
 def generation(SIZE):
-	matrix = [["." for _ in range(SIZE)] for _ in range(SIZE)]
+	matrix = [[VOID_CHAR for _ in range(SIZE)] for _ in range(SIZE)]
 	items = []
 	score = 0
 
@@ -29,7 +33,7 @@ def get_free_positions(matrix, items):
 
 	for y in range(SIZE):
 		for x in range(SIZE):
-			if matrix[y][x] == ".":
+			if matrix[y][x] == VOID_CHAR:
 				free_positions += [[x, y]]
 	return free_positions
 
@@ -37,8 +41,8 @@ def random_items(matrix, items):
 	free_positions = get_free_positions(matrix, items)
 	if free_positions:
 		x, y = random.choice(free_positions)
-		#random_char_sett = random.randint(0, 1)
-		items += [[x, y, 0 ]]
+		random_char_set = 0 if random.randint(0, 9) < 9 else 1
+		items += [[x, y, random_char_set ]]
 		return items
 
 def random_seed(seed):
@@ -50,11 +54,14 @@ def random_seed(seed):
 
 def item_indexer(matrix, items):
 	for items_id in range(len(items)):
-		matrix[items[items_id][1]][items[items_id][0]] =  char_set[items[items_id][2]]
+		matrix[items[items_id][1]][items[items_id][0]] =  CHAR_SET[items[items_id][2]]
 	return matrix
 
 def view(matrix, score):
-	os.system("clear")
+	if os.name == 'nt':
+		os.system("cls")
+	else:
+		os.system("clear")
 	print("SCORE:", score)
 	matrix = item_indexer(matrix, items)
 
@@ -64,20 +71,28 @@ def view(matrix, score):
 		print("")
 
 def lisener():
-	fd = sys.stdin.fileno()
-	old_settings = termios.tcgetattr(fd)
-	try:
-		tty.setraw(fd)
+	if os.name == 'nt':  # Windowsd
 		while True:
-			ch = sys.stdin.read(1)
+			ch = msvcrt.getch().decode('utf-8')
 			if ch in "wasd":
 				return ch
 			elif ch == "q":
 				sys.exit()
-	finally:
-		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)  # Восстанавливаем настройки терминала
+	else:  # Unix
+		fd = sys.stdin.fileno()
+		old_settings = termios.tcgetattr(fd)
+		try:
+			tty.setraw(fd)
+			while True:
+				ch = sys.stdin.read(1)
+				if ch in "wasd":
+					return ch
+				elif ch == "q":
+					sys.exit()
+		finally:
+			termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)  # Восстанавливаем настройки терминала
 
-def movement(matrix, items, score):
+def movement(matrix, items, direction, score):
 	moved = True
 	n=0
 	old_obj, new_obj = [], []
@@ -89,7 +104,7 @@ def movement(matrix, items, score):
 		"s": (1, 1,  lambda i: i[1], True)
 	}
 
-	axis, delta, key_fn, reverse = dirs[MOVE_TO]
+	axis, delta, key_fn, reverse = dirs[direction]
 
 	# Сортируем индексы по направлению движения
 	sorted_ids = sorted(range(len(items)), key=lambda i: key_fn(items[i]), reverse=reverse)
@@ -102,7 +117,7 @@ def movement(matrix, items, score):
 			x = obj[0]
 			y = obj[1]
 			symbol = obj[2]
-			matrix[y][x] = "."
+			matrix[y][x] = VOID_CHAR
 
 			# Удаление дубликатов по позиции и символу
 			for other in items[::-1]:  # с конца
@@ -123,7 +138,7 @@ def movement(matrix, items, score):
 			old_obj += [obj]
 
 			if not blocked:
-				matrix[y][x] = "."
+				matrix[y][x] = VOID_CHAR
 				obj[axis] += delta
 
 			# Границы
@@ -138,10 +153,11 @@ def movement(matrix, items, score):
 		random_items(matrix, items)
 	return score
 
-matrix, items, score= generation(SIZE)
+matrix, items, score = generation(SIZE)
 random_items(matrix, items)
 random_items(matrix, items)
 
 while True:
 	view(matrix, score)
-	score = movement(matrix, items, score)
+	direction = lisener()
+	score = movement(matrix, items, direction, score)
