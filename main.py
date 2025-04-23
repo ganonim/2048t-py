@@ -23,7 +23,7 @@ DIRS = {
 	"a": (0, -1, lambda i: i[0], False),
 	"d": (0, 1,  lambda i: i[0], True),
 	"w": (1, -1, lambda i: i[1], False),
- 	"s": (1, 1,  lambda i: i[1], True)
+	"s": (1, 1,  lambda i: i[1], True)
 	}
 
 def get_generation():
