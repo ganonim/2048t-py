@@ -39,16 +39,9 @@ def random_items(matrix, items):
 	free_positions = get_free_positions(matrix, items)
 	if free_positions:
 		x, y = random.choice(free_positions)
-		random_char_set = 0 if random.randint(0, 9) < 9 else 0
-		items += [[x, y, random_char_set ]]
+		random_char_set = 0 if random.randint(0, 9) < 9 else 1
+		items += [[x, y, random_char_set]]
 		return items
-
-def random_seed(seed):
-	if seed == -1:
-		new_seed = random.randint(10**(8-1), 10**8 - 1)
-		random.seed(new_seed)
-	else:
-		random.seed(seed)
 
 def item_indexer(matrix, items):
 	for items_id in range(len(items)):
@@ -99,12 +92,10 @@ def movement(matrix, items, direction, score):
 	"d": (0, 1,  lambda i: i[0], True),
 	"w": (1, -1, lambda i: i[1], False),
  	"s": (1, 1,  lambda i: i[1], True)
-}
+	}
 
 	axis, delta, key_fn, reverse = dirs[direction]
-
 	sorted_items = sorted(items, key=key_fn, reverse=reverse)
-
 
 	while moved:
 		moved = False
