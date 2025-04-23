@@ -87,13 +87,6 @@ def process_movement(matrix, items, direction, score):
 	moved = True
 	old_obj, new_obj = [], []
 
-	DIRS = {
-	"a": (0, -1, lambda i: i[0], False),
-	"d": (0, 1,  lambda i: i[0], True),
-	"w": (1, -1, lambda i: i[1], False),
- 	"s": (1, 1,  lambda i: i[1], True)
-	}
-
 	axis, delta, key_fn, reverse = DIRS[direction]
 	sorted_items = sorted(items, key=key_fn, reverse=reverse)
 
