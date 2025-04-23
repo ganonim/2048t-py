@@ -53,7 +53,7 @@ def get_random_items(matrix, items):
 
 def get_item_indexer(matrix, items):
 	for items_id in range(len(items)):
-		matrix[items[items_id][1]][items[items_id][0]] =  CHAR_SET[items[items_id][2]]
+		matrix[items[items_id][1]][items[items_id][0]] = CHAR_SET[items[items_id][2]]
 	return matrix
 
 def get_view(matrix, score):
