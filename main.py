@@ -16,9 +16,17 @@ CHAR_SET = [
     "G", "H", "I",
     "J", "K", "L",
     "M", "N", "O",
-    "P"]
+    "P"
+	]
 
-def get_generation(SIZE):
+DIRS = {
+	"a": (0, -1, lambda i: i[0], False),
+	"d": (0, 1,  lambda i: i[0], True),
+	"w": (1, -1, lambda i: i[1], False),
+ 	"s": (1, 1,  lambda i: i[1], True)
+	}
+
+def get_generation():
 	matrix = [[VOID_CHAR for _ in range(SIZE)] for _ in range(SIZE)]
 	items = []
 	score = 0
@@ -133,7 +141,7 @@ def process_movement(matrix, items, direction, score):
 	return score
 
 if __name__ == "__main__":
-	matrix, items, score = get_generation(SIZE)
+	matrix, items, score = get_generation()
 	get_random_items(matrix, items)
 	get_random_items(matrix, items)
 
