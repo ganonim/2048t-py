@@ -18,14 +18,14 @@ CHAR_SET = [
     "M", "N", "O",
     "P"]
 
-def generation(SIZE):
+def get_generation(SIZE):
 	matrix = [[VOID_CHAR for _ in range(SIZE)] for _ in range(SIZE)]
 	items = []
 	score = 0
 	return matrix, items, score
 
 def get_free_positions(matrix, items):
-	matrix = item_indexer(matrix, items)
+	matrix = get_item_indexer(matrix, items)
     #Cписок всех свободных позиций на карте
 	free_positions = []
 
@@ -35,7 +35,7 @@ def get_free_positions(matrix, items):
 				free_positions += [[x, y]]
 	return free_positions
 
-def random_items(matrix, items):
+def get_random_items(matrix, items):
 	free_positions = get_free_positions(matrix, items)
 	if free_positions:
 		x, y = random.choice(free_positions)
@@ -43,25 +43,25 @@ def random_items(matrix, items):
 		items += [[x, y, random_char_set]]
 		return items
 
-def item_indexer(matrix, items):
+def get_item_indexer(matrix, items):
 	for items_id in range(len(items)):
 		matrix[items[items_id][1]][items[items_id][0]] =  CHAR_SET[items[items_id][2]]
 	return matrix
 
-def view(matrix, score):
+def get_view(matrix, score):
 	if os.name == 'nt':
 		os.system("cls")
 	else:
 		os.system("clear")
 	print("SCORE:", score)
-	matrix = item_indexer(matrix, items)
+	matrix = get_item_indexer(matrix, items)
 
 	for widtht in range(SIZE):
 		for lenght in range(len(matrix)):
 			print(matrix[widtht][lenght], end=" ")
 		print("")
 
-def lisener():
+def get_lisener():
 	if os.name == 'nt':  # Windowsd
 		while True:
 			ch = msvcrt.getch().decode('utf-8')
@@ -83,18 +83,18 @@ def lisener():
 		finally:
 			termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)  # Восстанавливаем настройки терминала
 
-def movement(matrix, items, direction, score):
+def process_movement(matrix, items, direction, score):
 	moved = True
 	old_obj, new_obj = [], []
 
-	dirs = {
+	DIRS = {
 	"a": (0, -1, lambda i: i[0], False),
 	"d": (0, 1,  lambda i: i[0], True),
 	"w": (1, -1, lambda i: i[1], False),
  	"s": (1, 1,  lambda i: i[1], True)
 	}
 
-	axis, delta, key_fn, reverse = dirs[direction]
+	axis, delta, key_fn, reverse = DIRS[direction]
 	sorted_items = sorted(items, key=key_fn, reverse=reverse)
 
 	while moved:
@@ -136,15 +136,15 @@ def movement(matrix, items, direction, score):
 				new_obj += [obj]
 
 	if old_obj != new_obj:
-		random_items(matrix, items)
+		get_random_items(matrix, items)
 	return score
 
 if __name__ == "__main__":
-	matrix, items, score = generation(SIZE)
-	random_items(matrix, items)
-	random_items(matrix, items)
+	matrix, items, score = get_generation(SIZE)
+	get_random_items(matrix, items)
+	get_random_items(matrix, items)
 
 	while True:
-		view(matrix, score)
-		direction = lisener()
-		score = movement(matrix, items, direction, score)
+		get_view(matrix, score)
+		direction = get_lisener()
+		score = process_movement(matrix, items, direction, score)
